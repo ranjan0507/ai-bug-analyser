@@ -19,6 +19,12 @@ class Hypothesis(BaseModel):
 	what_to_check: list[str]=Field(default_factory=list)
 	expected_evidence: str
 
+class HypothesisList(BaseModel):
+	hypotheses:list[Hypothesis]=Field(
+		min_length=1,
+		max_length=4
+	)
+
 class InvestigationPlan(BaseModel):
 	steps: list[str]=Field(default_factory=list)
 	tool_or_methods:list[str]=Field(default_factory=list)

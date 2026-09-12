@@ -1,5 +1,6 @@
 from nodes.context_profiler import context_profiler
 from nodes.bug_analyser import bug_analyzer
+from nodes.hypothesis_generator import generate_hypothesis
 
 def main():
 
@@ -34,6 +35,15 @@ int main() {
     print(state["code_profile"].model_dump_json(indent=2))
     print("\nBUG REPORT:\n")
     print(state["bug_analysis"].model_dump_json(indent=2))
+
+    hypothesis_result=generate_hypothesis(state)
+    state.update(hypothesis_result)
+
+    print("\nHYPOTHESES:\n")
+
+    for index, hypothesis in enumerate(state["hypotheses"], start=1):
+        print(f"\nHypothesis {index}")
+        print(hypothesis.model_dump_json(indent=2))
 
 
 if __name__ == "__main__":
