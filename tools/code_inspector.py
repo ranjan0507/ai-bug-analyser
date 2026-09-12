@@ -1,5 +1,26 @@
 from models.schemas import ToolResult,Evidence
 
+TOOL_NAME = "code_inspector"
+
+TOOL_DESCRIPTION = """
+Purpose:
+Inspect source code and return deterministic, verifiable information.
+
+Capabilities:
+- Retrieve a specific line of code
+- Retrieve a range of lines
+- Search the code for a keyword or pattern
+
+Use when:
+You need exact code locations or source snippets as evidence
+while investigating a hypothesis.
+
+Limitations:
+- Does not diagnose bugs
+- Does not generate hypotheses
+- Does not determine root causes
+"""
+
 class CodeInspector:
 	def __init__(self,code:str):
 		self.code=code

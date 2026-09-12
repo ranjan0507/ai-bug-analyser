@@ -3,6 +3,7 @@ from nodes.bug_analyser import bug_analyzer
 from nodes.hypothesis_generator import generate_hypothesis
 from nodes.validate_hypothesis import hypothesis_validator
 from tools.code_inspector import CodeInspector
+from tools.stack_trace_parser import StackTraceParser
 
 def main():
 
@@ -24,7 +25,11 @@ int main() {
 }
 """,
         "error": "Segmentation fault",
-        "stack_trace": None,
+        "stack_trace" : """
+Segmentation fault
+main.cpp:10
+main()
+"""
     }
 
     profile_result = context_profiler(state)
@@ -53,6 +58,12 @@ int main() {
     inspector=CodeInspector(state["code"])
     result=inspector.search("nums.size")
     print("\nCODE INSPECTION\n")
+    print(result.model_dump_json(indent=2))
+
+    parser = StackTraceParser(state["stack_trace"])
+    result = parser.parse()
+
+    print("\nSTACK TRACE PARSER:")
     print(result.model_dump_json(indent=2))
 
 if __name__ == "__main__":

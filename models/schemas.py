@@ -30,9 +30,17 @@ class HypothesisValidation(BaseModel):
 	issues: list[str] = Field(default_factory=list)
 	filtered_hypotheses: list[Hypothesis] = Field(default_factory=list)
 
+class InvestigationStep(BaseModel):
+	step_number:int
+	objective:str
+	method:str
+	tool_name:str|None = None
+	action:str
+	expected_evidence:str
+
 class InvestigationPlan(BaseModel):
-	steps: list[str]=Field(default_factory=list)
-	tool_or_methods:list[str]=Field(default_factory=list)
+	steps: list[InvestigationStep]=Field(default_factory=list)
+	hypothesis:str
 
 class Evidence(BaseModel):
 	description:str
