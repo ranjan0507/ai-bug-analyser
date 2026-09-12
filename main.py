@@ -2,6 +2,7 @@ from nodes.context_profiler import context_profiler
 from nodes.bug_analyser import bug_analyzer
 from nodes.hypothesis_generator import generate_hypothesis
 from nodes.validate_hypothesis import hypothesis_validator
+from tools.code_inspector import CodeInspector
 
 def main():
 
@@ -49,6 +50,10 @@ int main() {
         print(f"\nHypothesis {index}")
         print(hypothesis.model_dump_json(indent=2))
 
+    inspector=CodeInspector(state["code"])
+    result=inspector.search("nums.size")
+    print("\nCODE INSPECTION\n")
+    print(result.model_dump_json(indent=2))
 
 if __name__ == "__main__":
     main()

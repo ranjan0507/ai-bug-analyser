@@ -38,6 +38,13 @@ class Evidence(BaseModel):
 	description:str
 	source:str
 
+class ToolResult(BaseModel):
+	tool_name: str
+	success: bool
+	observations: list[str] = Field(default_factory=list)
+	evidence: list[Evidence] = Field(default_factory=list)
+	error: str | None = None
+
 class InvestigationResult(BaseModel):
 	hypothesis:Hypothesis
 	plan:InvestigationPlan
