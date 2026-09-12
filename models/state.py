@@ -1,4 +1,4 @@
-from schemas import BugAnalysis,CodeProfile,Hypothesis,InvestigationPlan,InvestigationResult,HumanInteraction,Evidence,FinalConclusion,Fix
+from models.schemas import BugAnalysis,CodeProfile,Hypothesis,InvestigationPlan,InvestigationResult,HumanInteraction,Evidence,FinalConclusion,Fix
 from typing import TypedDict
 
 class BugState(TypedDict):
