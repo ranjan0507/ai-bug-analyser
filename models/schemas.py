@@ -25,6 +25,11 @@ class HypothesisList(BaseModel):
 		max_length=4
 	)
 
+class HypothesisValidation(BaseModel):
+	valid:bool
+	issues: list[str] = Field(default_factory=list)
+	filtered_hypotheses: list[Hypothesis] = Field(default_factory=list)
+
 class InvestigationPlan(BaseModel):
 	steps: list[str]=Field(default_factory=list)
 	tool_or_methods:list[str]=Field(default_factory=list)

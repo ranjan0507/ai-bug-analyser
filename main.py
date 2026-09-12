@@ -1,6 +1,7 @@
 from nodes.context_profiler import context_profiler
 from nodes.bug_analyser import bug_analyzer
 from nodes.hypothesis_generator import generate_hypothesis
+from nodes.validate_hypothesis import hypothesis_validator
 
 def main():
 
@@ -38,6 +39,9 @@ int main() {
 
     hypothesis_result=generate_hypothesis(state)
     state.update(hypothesis_result)
+
+    validation_result = hypothesis_validator(state)
+    state.update(validation_result)
 
     print("\nHYPOTHESES:\n")
 
