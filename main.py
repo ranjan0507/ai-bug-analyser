@@ -1,5 +1,5 @@
 from nodes.context_profiler import context_profiler
-
+from nodes.bug_analyser import bug_analyzer
 
 def main():
 
@@ -24,9 +24,16 @@ int main() {
         "stack_trace": None,
     }
 
-    result = context_profiler(state)
+    profile_result = context_profiler(state)
+    state.update(profile_result)
 
-    print(result["code_profile"].model_dump_json(indent=2))
+    bug_analysis_result = bug_analyzer(state)
+    state.update(bug_analysis_result)
+
+    print("CODE PROFILE:\n")
+    print(state["code_profile"].model_dump_json(indent=2))
+    print("\nBUG REPORT:\n")
+    print(state["bug_analysis"].model_dump_json(indent=2))
 
 
 if __name__ == "__main__":
