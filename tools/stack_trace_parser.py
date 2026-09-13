@@ -65,7 +65,7 @@ class StackTraceParser:
 				if function not in function_references:
 					function_references.append(function)
 
-			observations = [
+		observations = [
             f"Parsed {len(lines)} stack trace entries.",
             f"Found {len(file_references)} file reference(s).",
             f"Found {len(line_references)} line reference(s).",

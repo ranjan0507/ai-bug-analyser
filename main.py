@@ -3,6 +3,7 @@ from nodes.bug_analyser import bug_analyzer
 from nodes.hypothesis_generator import generate_hypothesis
 from nodes.validate_hypothesis import hypothesis_validator
 from nodes.investigation_planner import investigation_planner
+from nodes.investigation_executor import execute_tool_step
 
 def main():
 
@@ -63,5 +64,24 @@ main()
         .model_dump_json(indent=2)
     )
 
+    plan=state["current_investigation_plan"]
+    for step in plan.steps:
+
+        if step.method == "tool":
+
+            result = execute_tool_step(
+                step,
+                state
+            )
+
+            print("\nTOOL EXECUTION RESULT:")
+
+            print(
+                result.model_dump_json(
+                    indent=2
+                )
+            )
+
+        break
 if __name__ == "__main__":
     main()

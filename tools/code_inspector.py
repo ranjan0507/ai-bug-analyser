@@ -93,7 +93,7 @@ class CodeInspector:
 				tool_name="code_inspector",
 				success=True,
 				observations=[
-					f"No matches found for '{query}"
+					f"No matches found for '{query}'"
 				]
 			)
 
@@ -101,7 +101,7 @@ class CodeInspector:
 			tool_name="code_inspector",
 			success=True,
 			observations=[
-				f"Found {len(matches)} matches for '{query}"
+				f"Found {len(matches)} matches for '{query}'"
 			],
 			evidence=[
 				Evidence(
