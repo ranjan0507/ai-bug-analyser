@@ -14,7 +14,7 @@ class BugState(TypedDict):
 
 	current_investigation_plan=InvestigationPlan|None
 	current_observations:list[str]
-	current_evidenc:list[Evidence]
+	current_evidence:list[Evidence]
 
 	investigation_results:list[InvestigationResult]
 
