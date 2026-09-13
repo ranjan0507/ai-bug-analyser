@@ -19,7 +19,7 @@ def investigation_planner(state:BugState):
 	available_tools=f"""
 TOOL: {CODE_INSPECTOR_NAME}
 
-{CODE_INSPECTOR_DESCRIPTION}p/
+{CODE_INSPECTOR_DESCRIPTION}
 
 
 TOOL: {STACK_PARSER_NAME}
@@ -49,24 +49,68 @@ RULES:
 - tool
 - llm_reasoning
 
-3. If method is "tool", tool_name MUST be one of
-the available tools provided below.
+3. If method is "tool":
 
-4. Do not invent tools.
+- tool_name MUST be one of the available tools.
+- tool_operation MUST be a valid operation supported by that tool.
+- tool_arguments MUST contain the exact arguments required
+  for that operation.
+- Do not invent tools or operations.
 
-5. Use a tool when deterministic evidence can be
-obtained from it.
+4. If method is "llm_reasoning":
 
-6. Use llm_reasoning when interpretation or logical
-analysis is required.
+- tool_name must be null.
+- tool_operation must be null.
+- tool_arguments must be an empty dictionary.
 
-7. Do NOT investigate the hypothesis.
+5. Use a tool when deterministic evidence can be obtained
+from it.
 
-8. Do NOT generate observations or evidence.
+6. Use llm_reasoning when interpretation, comparison,
+logical analysis, or reasoning is required.
 
-9. Do NOT decide whether the hypothesis is correct.
+7. The investigation plan must be executable.
 
-10. Do NOT generate a fix.
+For example:
+
+If using code_inspector to search code:
+
+tool_name = "code_inspector"
+tool_operation = "search"
+tool_arguments = {{
+    "query": "exact search term"
+}}
+
+If using code_inspector to retrieve one line:
+
+tool_name = "code_inspector"
+tool_operation = "get_line"
+tool_arguments = {{
+    "line_number": 10
+}}
+
+If using code_inspector to retrieve a range:
+
+tool_name = "code_inspector"
+tool_operation = "get_lines"
+tool_arguments = {{
+    "start_line": 8,
+    "end_line": 12
+}}
+
+If using stack_trace_parser:
+
+tool_name = "stack_trace_parser"
+tool_operation = "parse"
+tool_arguments = {{}}
+
+8. Do NOT investigate the hypothesis.
+
+9. Do NOT generate observations or evidence.
+
+10. Do NOT decide whether the hypothesis is correct.
+
+11. Do NOT generate a fix.
 
 
 CURRENT HYPOTHESIS:

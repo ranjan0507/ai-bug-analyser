@@ -1,5 +1,6 @@
 from pydantic import BaseModel,Field
 from enum import Enum
+from typing import Any
 
 class CodeProfile(BaseModel):
 	language:str
@@ -40,6 +41,8 @@ class InvestigationStep(BaseModel):
 	objective:str
 	method:InvestigationMethods
 	tool_name:str|None = None
+	tool_operation:str|None = None
+	tool_arguments:dict[str,Any]=Field(default_factory=list)
 	action:str
 	expected_evidence:str
 
@@ -62,7 +65,7 @@ class InvestigationResult(BaseModel):
 	hypothesis:Hypothesis
 	plan:InvestigationPlan
 	observations:list[str]=Field(default_factory=list)
-	evidence:list[str]=Field(default_factory=list)
+	evidence:list[Evidence]=Field(default_factory=list)
 
 class HumanInteraction(BaseModel):
     question: str

@@ -42,7 +42,12 @@ def investigation_executor(state:BugState):
 			)
 	investigation_result=InvestigationResult(
 		hypothesis=hypothesis,
-		plan=plan
+		plan=plan,
 		observations=observations,
 		evidence=evidence
 	)
+	
+	return {
+		"current_observations":observations,
+		"current_evidence":evidence
+	}
