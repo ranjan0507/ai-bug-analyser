@@ -1,4 +1,5 @@
 from pydantic import BaseModel,Field
+from enum import Enum
 
 class CodeProfile(BaseModel):
 	language:str
@@ -30,10 +31,14 @@ class HypothesisValidation(BaseModel):
 	issues: list[str] = Field(default_factory=list)
 	filtered_hypotheses: list[Hypothesis] = Field(default_factory=list)
 
+class InvestigationMethods(str,Enum):
+	TOOL="tool",
+	LLM_REASONING="llm_reasoning"
+
 class InvestigationStep(BaseModel):
 	step_number:int
 	objective:str
-	method:str
+	method:InvestigationMethods
 	tool_name:str|None = None
 	action:str
 	expected_evidence:str
@@ -56,10 +61,8 @@ class ToolResult(BaseModel):
 class InvestigationResult(BaseModel):
 	hypothesis:Hypothesis
 	plan:InvestigationPlan
-	obvservations:list[str]=Field(default_factory=list)
+	observations:list[str]=Field(default_factory=list)
 	evidence:list[str]=Field(default_factory=list)
-	verdict:str
-	confidence:float
 
 class HumanInteraction(BaseModel):
     question: str

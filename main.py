@@ -2,8 +2,7 @@ from nodes.context_profiler import context_profiler
 from nodes.bug_analyser import bug_analyzer
 from nodes.hypothesis_generator import generate_hypothesis
 from nodes.validate_hypothesis import hypothesis_validator
-from tools.code_inspector import CodeInspector
-from tools.stack_trace_parser import StackTraceParser
+from nodes.investigation_planner import investigation_planner
 
 def main():
 
@@ -55,16 +54,14 @@ main()
         print(f"\nHypothesis {index}")
         print(hypothesis.model_dump_json(indent=2))
 
-    inspector=CodeInspector(state["code"])
-    result=inspector.search("nums.size")
-    print("\nCODE INSPECTION\n")
-    print(result.model_dump_json(indent=2))
+    plan_result=investigation_planner(state)
+    state.update(plan_result)
+    print("\nINVESTIGATION PLAN:")
 
-    parser = StackTraceParser(state["stack_trace"])
-    result = parser.parse()
-
-    print("\nSTACK TRACE PARSER:")
-    print(result.model_dump_json(indent=2))
+    print(
+        state["current_investigation_plan"]
+        .model_dump_json(indent=2)
+    )
 
 if __name__ == "__main__":
     main()
