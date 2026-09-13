@@ -6,6 +6,7 @@ from nodes.investigation_planner import investigation_planner
 from nodes.investigation_evaluator import investigation_evaluator
 from nodes.investigation_executor import investigation_executor
 from nodes.hypothesis_controller import prepare_next_hypothesis
+from nodes.investigation_decision import investigation_decision
 
 def main():
 
@@ -111,14 +112,15 @@ main()
 
         state.update(next_state)
 
-    print("\n\nALL INVESTIGATION RESULTS:")
+    decision_result = investigation_decision(state)
+    state.update(decision_result)
 
-    for index, result in enumerate(state["investigation_results"],start=1):
-        print(f"\n--- Hypothesis {index} ---")
+    print("\nINVESTIGATION DECISION:")
 
-        print(
-            result.model_dump_json(indent=2)
-        )
+    print(
+        state["investigation_decision"]
+        .model_dump_json(indent=2)
+    )
 
 if __name__ == "__main__":
     main()

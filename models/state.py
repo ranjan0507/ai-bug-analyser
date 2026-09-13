@@ -1,4 +1,4 @@
-from models.schemas import BugAnalysis,CodeProfile,Hypothesis,InvestigationPlan,InvestigationResult,HumanInteraction,Evidence,FinalConclusion,Fix
+from models.schemas import BugAnalysis,CodeProfile,Hypothesis,InvestigationPlan,InvestigationResult,HumanInteraction,Evidence,FinalConclusion,Fix,InvestigationDecision
 from typing import TypedDict
 
 class BugState(TypedDict):
@@ -17,6 +17,8 @@ class BugState(TypedDict):
 	current_evidence:list[Evidence]
 
 	investigation_results:list[InvestigationResult]
+
+	investigation_decision:InvestigationDecision|None
 
 	human_interactions:list[HumanInteraction]
 	clarification_count:int

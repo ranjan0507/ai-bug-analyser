@@ -79,6 +79,11 @@ class InvestigationResult(BaseModel):
 	verdict:Verdict
 	confidence:float
 
+class InvestigationDecision(BaseModel):
+	should_conclude:bool
+	should_ask_human:bool
+	reason:str
+
 class HumanInteraction(BaseModel):
     question: str
     answer: str | None = None
