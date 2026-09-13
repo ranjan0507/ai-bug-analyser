@@ -4,6 +4,8 @@ from nodes.hypothesis_generator import generate_hypothesis
 from nodes.validate_hypothesis import hypothesis_validator
 from nodes.investigation_planner import investigation_planner
 from nodes.investigation_executor import execute_tool_step
+from models.schemas import InvestigationMethods
+from nodes.investigation_evaluator import investigation_evaluator
 
 def main():
 
@@ -29,7 +31,24 @@ int main() {
 Segmentation fault
 main.cpp:10
 main()
-"""
+""",
+"code_profile": None,
+    "bug_analysis": None,
+
+    "hypotheses": [],
+    "current_hypothesis_index": 0,
+
+    "current_investigation_plan": None,
+    "current_observations": [],
+    "current_evidence": [],
+
+    "investigation_results": [],
+
+    "human_interactions": [],
+    "clarification_count": 0,
+
+    "final_conclusion": None,
+    "fix": None
     }
 
     profile_result = context_profiler(state)
@@ -64,24 +83,24 @@ main()
         .model_dump_json(indent=2)
     )
 
-    plan=state["current_investigation_plan"]
-    for step in plan.steps:
+    from nodes.investigation_executor import investigation_executor
 
-        if step.method == "tool":
+    executor_result = investigation_executor(state)
 
-            result = execute_tool_step(
-                step,
-                state
-            )
+    state.update(executor_result)
 
-            print("\nTOOL EXECUTION RESULT:")
+    evaluator_result=investigation_evaluator(state)
+    state.update(evaluator_result)
 
-            print(
-                result.model_dump_json(
-                    indent=2
-                )
-            )
+    print("\nINVESTIGATION RESULT:")
 
-        break
+    result = state["investigation_results"][-1]
+
+    print(
+        result.model_dump_json(
+            indent=2
+        )
+    )
+
 if __name__ == "__main__":
     main()

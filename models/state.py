@@ -6,23 +6,23 @@ class BugState(TypedDict):
 	error:str
 	stack_trace:str|None
 
-	code_profile=CodeProfile
-	bug_analysis=BugAnalysis
+	code_profile:CodeProfile
+	bug_analysis:BugAnalysis
 
-	hypotheses=list[Hypothesis]
+	hypotheses:list[Hypothesis]
 	current_hypothesis_index:int
 
 	current_investigation_plan=InvestigationPlan|None
 	current_observations:list[str]
-	current_evidence=list[Evidence]
+	current_evidenc:list[Evidence]
 
-	investigation_results=list[InvestigationResult]
+	investigation_results:list[InvestigationResult]
 
-	human_interactions=list[HumanInteraction]
-	clarification_count:str
+	human_interactions:list[HumanInteraction]
+	clarification_count:int
 
-	final_conclusion=FinalConclusion|None
-	fix=Fix|None
+	final_conclusion:FinalConclusion|None
+	fix:Fix|None
 
 
 

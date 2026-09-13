@@ -42,7 +42,7 @@ class InvestigationStep(BaseModel):
 	method:InvestigationMethods
 	tool_name:str|None = None
 	tool_operation:str|None = None
-	tool_arguments:dict[str,Any]=Field(default_factory=list)
+	tool_arguments:dict[str,Any]=Field(default_factory=dict)
 	action:str
 	expected_evidence:str
 
@@ -61,11 +61,23 @@ class ToolResult(BaseModel):
 	evidence: list[Evidence] = Field(default_factory=list)
 	error: str | None = None
 
+class ReasoningStepResult(BaseModel):
+    observations: list[str] = Field(default_factory=list)
+    evidence: list[str] = Field(default_factory=list)
+
+
+class Verdict(str,Enum):
+	SUPPORTED="supported"
+	REJECTED="rejected"
+	INCONCLUSIVE="inconclusive"
+
 class InvestigationResult(BaseModel):
 	hypothesis:Hypothesis
 	plan:InvestigationPlan
 	observations:list[str]=Field(default_factory=list)
 	evidence:list[Evidence]=Field(default_factory=list)
+	verdict:Verdict
+	confidence:float
 
 class HumanInteraction(BaseModel):
     question: str
