@@ -7,6 +7,7 @@ from nodes.investigation_evaluator import investigation_evaluator
 from nodes.investigation_executor import investigation_executor
 from nodes.hypothesis_controller import prepare_next_hypothesis
 from nodes.investigation_decision import investigation_decision
+from nodes.final_conclusion import final_conclusion
 
 def main():
 
@@ -121,6 +122,25 @@ main()
         state["investigation_decision"]
         .model_dump_json(indent=2)
     )
+
+    print("\nALL RESULTS BEFORE FINAL CONCLUSION:")
+    for index, result in enumerate(
+        state["investigation_results"],
+        start=1
+    ):
+        print(f"\n--- Result {index} ---")
+        print(result.model_dump_json(indent=2))
+
+
+    if state["investigation_decision"].should_conclude:
+        conclusion_result = final_conclusion(state)
+        state.update(conclusion_result)
+
+        print("\nFINAL CONCLUSION:")
+
+        print(
+            state["final_conclusion"].model_dump_json(indent=2)
+        )
 
 if __name__ == "__main__":
     main()
