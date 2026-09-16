@@ -1,6 +1,6 @@
 from models.state import BugState
 from models.schemas import InvestigationDecision
-
+from models.schemas import InvestigationDecision, Verdict
 from utils.llm import get_llm
 
 def investigation_decision(state:BugState):
@@ -18,6 +18,18 @@ HYPOTHESIS {index}:
 		]
 	)
 
+	supported_results=[
+		result
+		for result in results
+		if result.verdict==Verdict.SUPPORTED
+	]
+
+	inconclusive_results=[
+		result
+		for result in results
+		if result.verdict==Verdict.INCONCLUSIVE
+	]
+
 	prompt=f"""
 You are deciding what should happen after all debugging
 hypotheses have been investigated.
@@ -34,10 +46,35 @@ sufficient or insufficient.
 Do not restate, expand, reinterpret, or introduce details about
 the suspected bug or root cause in the reason.
 
+An inconclusive investigation result must not be treated
+as confirmation of a root cause.
+
+If all plausible explanations remain inconclusive and the
+missing information can reasonably be provided by the user,
+request human clarification.
+
+Do not conclude merely because the code contains unsafe,
+incorrect, or potentially problematic patterns.
+
 Do NOT generate the final conclusion.
 Do NOT generate a fix.
 Do NOT create new hypotheses.
 Do NOT reinterpret or invent evidence.
+
+Decision rules:
+
+- If one or more hypotheses are supported with sufficient evidence
+  explaining the reported failure, you may conclude.
+
+- If hypotheses remain inconclusive because runtime information,
+  user input, environment details, or execution behavior is missing,
+  ask the human.
+
+- If all hypotheses are inconclusive, do NOT claim the root cause
+  is confirmed.
+
+- Distinguish between a confirmed code defect and a confirmed cause
+  of the reported failure.
 
 Set:
 
@@ -57,6 +94,18 @@ INVESTIGATION RESULTS:
 
 {results_text}
 """
+	if not supported_results and inconclusive_results:
+		return {
+			"investigation_decision":InvestigationDecision(
+				should_ask_human=True,
+				should_conclude=False,
+				reason=(
+					"The investiggation decision did not confirm any hypothesis, "
+					"and one or more plausible hypothesis remain inconclusive"
+				)
+			)
+		}
+	
 	decision=llm_with_structure.invoke(prompt)
 	return {
 		"investigation_decision":decision

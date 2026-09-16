@@ -33,16 +33,37 @@ You are NOT determining the final root cause of the entire bug.
 You must choose one verdict:
 
 - supported:
-  The collected evidence directly supports the hypothesis.
+  The collected evidence directly supports that this hypothesis
+  explains the reported failure in this specific case.
 
 - rejected:
-  The collected evidence contradicts the hypothesis.
+  The collected evidence directly contradicts the hypothesis.
 
 - inconclusive:
-  The available evidence is insufficient to confidently support
-  or reject the hypothesis.
+  The hypothesis is plausible or the code contains a potentially
+  problematic pattern, but the available evidence does not establish
+  that this hypothesis actually caused the reported failure.
 
-Confidence must be between 0.0 and 1.0.
+Important distinction:
+
+A risky or incorrect code pattern alone is NOT sufficient to mark
+a hypothesis as supported.
+
+For example:
+
+- Evidence that unchecked input handling exists does not prove that
+  invalid input occurred during this failure.
+
+- Evidence that an index is not bounds-checked does not prove that
+  an out-of-bounds index was used during this failure unless the
+  investigation provides evidence connecting it to the reported crash.
+
+Use "inconclusive" whenever the hypothesis is possible but requires
+runtime information, user input, or other missing evidence to confirm
+that it caused this specific failure.
+
+Confidence must reflect how strongly the collected evidence supports
+the verdict.
 
 Important rules:
 
@@ -52,6 +73,10 @@ Important rules:
 - Do not introduce a new hypothesis.
 - Do not determine the final root cause.
 - Evaluate only the current hypothesis.
+- Do not treat a hypothetical execution path as evidence that it
+  actually occurred.
+- Distinguish between "this code can fail this way" and
+  "this failure was caused this way."
 
 CURRENT HYPOTHESIS:
 

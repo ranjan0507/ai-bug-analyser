@@ -3,7 +3,7 @@ from models.schemas import HumanInteraction
 
 from utils.llm import get_llm
 
-def hil_question_gen(state:BugState):
+def hil_question_generator(state:BugState):
 	results=state["investigation_results"]
 	llm=get_llm()
 	llm_with_structure=llm.with_structured_output(HumanInteraction)
@@ -51,7 +51,7 @@ INVESTIGATION RESULTS:
 	interaction.answer=None
 
 	return{
-		"human_interaction":[
+		"human_interactions":[
 			*state["human_interactions"],
 			interaction
 		]

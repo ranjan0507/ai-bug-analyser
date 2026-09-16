@@ -12,7 +12,7 @@ class BugState(TypedDict):
 	hypotheses:list[Hypothesis]
 	current_hypothesis_index:int
 
-	current_investigation_plan=InvestigationPlan|None
+	current_investigation_plan:InvestigationPlan|None
 	current_observations:list[str]
 	current_evidence:list[Evidence]
 

@@ -1,25 +1,17 @@
-from nodes.context_profiler import context_profiler
-from nodes.bug_analyser import bug_analyzer
-from nodes.hypothesis_generator import generate_hypothesis
-from nodes.validate_hypothesis import hypothesis_validator
-from nodes.investigation_planner import investigation_planner
-from nodes.investigation_evaluator import investigation_evaluator
-from nodes.investigation_executor import investigation_executor
-from nodes.hypothesis_controller import prepare_next_hypothesis
-from nodes.investigation_decision import investigation_decision
-from nodes.final_conclusion import final_conclusion
+from langgraph.types import Command
+from graph.debugging_graph import build_debugging_graph
 
 def main():
 
     state = {
-        "code": """
+"code": """
 #include <iostream>
 #include <vector>
 
 using namespace std;
 
 int main() {
-    vector<int> nums = {1, 2, 3};
+    vector<int> nums = {10, 20, 30};
 
     int index;
     cin >> index;
@@ -53,94 +45,36 @@ main()
     "clarification_count": 0,
 
     "final_conclusion": None,
-    "fix": None
+    "fix": None,
+
+    "investigation_decision":None
     }
 
-    profile_result = context_profiler(state)
-    state.update(profile_result)
+    graph=build_debugging_graph()
 
-    bug_analysis_result = bug_analyzer(state)
-    state.update(bug_analysis_result)
+    config={
+        "configurable":{
+            "thread_id":"debug-1"
+        }
+    }
 
-    print("CODE PROFILE:\n")
-    print(state["code_profile"].model_dump_json(indent=2))
-    print("\nBUG REPORT:\n")
-    print(state["bug_analysis"].model_dump_json(indent=2))
+    result=graph.invoke(state,config=config)
 
-    hypothesis_result=generate_hypothesis(state)
-    state.update(hypothesis_result)
+    while "__interrupt__" in result:
+        interrupt_data=result["__interrupt__"][0].value
 
-    validation_result = hypothesis_validator(state)
-    state.update(validation_result)
+        print("\nHUMAN CLARIFICATION")
+        print(interrupt_data["question"])
+        print(f"\nReason: {interrupt_data['reason']}")
+        answer=input("\nYOUR ANSWER: ")
 
-    print("\nHYPOTHESES:\n")
+        result = graph.invoke(Command(resume=answer),config=config)
 
-    for index, hypothesis in enumerate(state["hypotheses"], start=1):
-        print(f"\nHypothesis {index}")
-        print(hypothesis.model_dump_json(indent=2))
-
-    while True:
-        print(f"\nINVESTIGATING HYPOTHESIS : {state["current_hypothesis_index"]+1}")
-
-        plan_result=investigation_planner(state)
-        state.update(plan_result)
-
-        print("\nINVESTIGATION PLAN:")
-        print(
-            state["current_investigation_plan"]
-            .model_dump_json(indent=2)
-        )
-
-        executor_result = investigation_executor(state)
-        state.update(executor_result)
-
-        evaluator_result=investigation_evaluator(state)
-        state.update(evaluator_result)
-
-        print("\nINVESTIGATION RESULT:")
-
-        result = state["investigation_results"][-1]
-
-        print(
-            result.model_dump_json(
-                indent=2
-            )
-        )
-
-        next_state=prepare_next_hypothesis(state)
-        if next_state is None:
-            break
-
-        state.update(next_state)
-
-    decision_result = investigation_decision(state)
-    state.update(decision_result)
-
-    print("\nINVESTIGATION DECISION:")
+    print("\nFINAL CONCLUSION")
 
     print(
-        state["investigation_decision"]
-        .model_dump_json(indent=2)
+        result["final_conclusion"].model_dump_json(indent=2)
     )
-
-    print("\nALL RESULTS BEFORE FINAL CONCLUSION:")
-    for index, result in enumerate(
-        state["investigation_results"],
-        start=1
-    ):
-        print(f"\n--- Result {index} ---")
-        print(result.model_dump_json(indent=2))
-
-
-    if state["investigation_decision"].should_conclude:
-        conclusion_result = final_conclusion(state)
-        state.update(conclusion_result)
-
-        print("\nFINAL CONCLUSION:")
-
-        print(
-            state["final_conclusion"].model_dump_json(indent=2)
-        )
 
 if __name__ == "__main__":
     main()
