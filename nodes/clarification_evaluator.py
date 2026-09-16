@@ -55,6 +55,23 @@ You are given:
 Your task is ONLY to decide whether the available information is
 now sufficient to proceed toward a final conclusion.
 
+You must evaluate the clarification against the existing hypotheses
+and investigation results.
+
+IMPORTANT:
+
+The user's answer is new evidence.
+
+Do not ignore, weaken, or treat the user's answer as merely contextual
+information.
+
+Determine whether the answer directly supports or rejects any existing
+hypothesis.
+
+For example, if a hypothesis concerns an input value and the user
+provides that exact input value, use that information when determining
+whether the hypothesis is sufficiently resolved.
+
 Do NOT generate a final conclusion.
 Do NOT generate a fix.
 Do NOT create new hypotheses.
@@ -64,13 +81,19 @@ Set:
 
 should_conclude = true
 when the investigation results combined with the user clarification
-are sufficient to proceed toward a final conclusion.
+provide sufficient evidence to determine the relevant cause among the
+existing hypotheses.
+
+Set:
 
 should_ask_human = true
 when important uncertainty still remains and another clarification
-would be useful.
+would materially help distinguish between the existing hypotheses.
 
 Both values must not be true at the same time.
+
+If the clarification directly resolves the uncertainty relevant to
+one of the existing hypotheses, prefer should_conclude = true.
 
 Your reason must explain only why the available information is
 sufficient or insufficient.

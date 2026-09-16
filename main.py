@@ -7,26 +7,21 @@ def main():
 "code": """
 #include <iostream>
 #include <vector>
-
 using namespace std;
 
 int main() {
     vector<int> nums = {10, 20, 30};
 
-    int index;
-    cin >> index;
+    int index = 5;
 
     cout << nums[index] << endl;
 
     return 0;
 }
 """,
-
-"error": "Segmentation fault",
-
-"stack_trace": """
-Segmentation fault
-main.cpp:12
+        "error": "Segmentation fault",
+        "stack_trace": """Segmentation fault
+main.cpp:10
 main()
 """,
 "code_profile": None,
